@@ -1,4 +1,4 @@
-const { replyMessage, pushMessge } = require("../servies/line.service");
+const { replyMessage, pushMessge } = require("../services/line.service");
 
 exports.webhook = async (req, res) => {
   try {
