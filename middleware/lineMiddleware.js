@@ -7,8 +7,10 @@ const lineMiddleware = async(req,res,next) => {
         channelAccessToken: env.LINE_ACCESS_TOKEN,
         channelSecret: env.LINE_SECRET_TOKEN
     }
+    console.log(lineConfig)
     try {
         const client = new line.Client(lineConfig)
+        console.log(client)
         line.middleware(lineConfig);
         next(client);
     } catch (error) {

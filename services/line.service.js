@@ -1,43 +1,26 @@
-const dotenv = require("dotenv");
-const env = dotenv.config().parsed;
+require("dotenv").config();
+const { LINE_ACCESS_TOKEN, LINE_SECRET_TOKEN, USER_ID } = process.env;
 const line = require("@line/bot-sdk");
+const { chatMessageOpenAi } = require('../services/openai.service') 
 
 const lineConfig = () => {
   const config = {
-    channelAccessToken: env.LINE_ACCESS_TOKEN,
-    channelSecret: env.LINE_SECRET_TOKEN,
+    channelAccessToken: LINE_ACCESS_TOKEN,
+    channelSecret: LINE_SECRET_TOKEN,
   };
   return config;
 };
 
 const replyMessage = async (event) => {
   const client = new line.Client(lineConfig());
+  console.log(event.message.text)
   if (event.type === "message") {
+    console.log(event.message.text)
+    const answer = await chatMessageOpenAi(event.message.text)
     const message = [
       {
         type: "text",
-        text: "Hi!!!",
-      },
-      {
-        type: "text",
-        text: "Welcome Back !!! $$$",
-        emojis: [
-          {
-            index: 17,
-            productId: "5ac21a8c040ab15980c9b43f",
-            emojiId: "016",
-          },
-          {
-            index: 18,
-            productId: "5ac21a8c040ab15980c9b43f",
-            emojiId: "031",
-          },
-          {
-            index: 19,
-            productId: "5ac21a8c040ab15980c9b43f",
-            emojiId: "031",
-          },
-        ],
+        text: answer,
       },
     ];
     return client.replyMessage(event.replyToken, message);
@@ -52,7 +35,7 @@ const pushMessge = async (message) => {
       type: "text",
       text: message,
     };
-    return client.pushMessage(env.USER_ID, messageConfig);
+    return client.pushMessage(USER_ID, messageConfig);
   }
   return null;
 };
